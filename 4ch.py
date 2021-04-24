@@ -1,65 +1,70 @@
 import json
-import sys
+from sys import argv, exit
 import requests
 from urllib.parse import urlparse
 import re
 from time import  sleep
-filename= []
-file_handle = []
-ext = []
-file_name = []
-file_size = []
-directory = sys.argv[2]
+import os
 
-url = ''
-def parse_url():
-    if '4chan' in sys.argv[1]:
-        global controller
-        controller = 'https://a.4cdn.org'
-        global netlock
-        netlock = urlparse(sys.argv[1]).path
-        netlock = re.findall(r'\/\w+\/', netlock)
-        url = controller + urlparse(sys.argv[1]).path + '.json'
-        return(url)
-    else:
-        controller = 'https://wizchan.org/'
-        netlock = urlparse(sys.argv[1]).path
-        netlock = re.findall(r'\/\w+\/', netlock)
-        url = sys.argv[1].replace('.html', '.json')
-        return(url)
+def request_data(url):
+	r = requests.get(url)
+	if r.status_code == 200:
+		return r.content
+	else:
+		print('404: PAGE NOT FOUND')
 
 
+def parse_argv():
+	if len(argv) < 3 or 'chan' not in argv[1]:
+		print (len(argv))
+		exit(2)
+	elif '4chan' in argv[1]:
+		netloc_4chan = 'a.4cdn.org'
+		netloc_ = urlparse(argv[1]).netloc
+		url = argv[1].replace(netloc_, netloc_4chan)
+		return url + '.json'
+	elif 'wizchan' in argv[1]:
+		return argv[1].replace('.html', '.json')
 
-def  get_data(url):
-    r = requests.get(url)
-    return(r.content)
+def parse_json():
+	json_data = request_data( parse_argv())
+	json_data = json.loads(json_data)
+	file_data = {}
+	for key in json_data['posts']:
+		if 'filename' and 'tim' and 'ext' in key.keys():
+			if '4chan' in argv[1]:
+				url = 'https://i.4cdn.org/'
+				path_4 = urlparse(argv[1]).path
+				path_4 = path_4.split('/')[1]
+				file_data[key['filename'] + key['ext']] = url + path_4 + '/' + str(key['tim'])   + key['ext']
+			else:
+				url = 'https://wizchan.org/'
+				path_4 = urlparse(argv[1]).path
+				path_4 = path_4.split('/')[1] + '/src/'
+				file_data[key['filename'] + key['ext']] = url + path_4 +  str(key['tim'])   + key['ext']
+	return file_data
 
+def check_files():
+	file_data = parse_json()
+	for files_ in os.listdir(argv[2]):
+		if files_ in file_data.keys():
+			file_data.pop(files_)
+	
+	return file_data
+	
 def main():
-    data = json.loads(get_data(parse_url()))
-    if 'posts' in data:
-        for keys in data['posts']:
-            if 'tim'  and 'ext' and  'filename' and 'fsize' in keys:
-                filename.append(str(keys['tim'])  + keys['ext'])
-                file_handle.append(str(keys['filename'])   + keys['ext'] ) 
-                file_size.append(str(keys['fsize'] / 100 ))
-    else:
-        sys.exit()
-
-    # DOWNLOAD FILES 
-    counter =  0
-    print(f'Total of {len(filename)} files')
-    for i, x, y in zip(filename, file_handle, file_size):
-        url2  = controller + netlock[0] + i
-        if '4cdn' in controller:
-            url2 = url2.replace('a', 'i')
-        else:
-            url2= f'{controller}{netlock[0]}src/{i}'
-        counter += 1
-        print(f' Donloading {x} {y} -KB  {counter}/{len(filename)}' )
-        data = get_data(url2)
-        sleep(4)
-        with open(directory+ x, 'wb') as f:
-            f.write(data)
-
+	file_data = check_files()
+	if file_data == 0:
+		print('Files already in directory')
+	else:
+		counter = 0
+		print(f' Total of {len(file_data.keys())} will be downloaded')
+		for file_ in file_data:
+		counter = counter +1
+		with open(os.path.join(argv[2], file_), 'wb') as f:
+		f.write(request_data( file_data[file_]))
+		print(f' Downloading {file_}  {counter} / {len(file_data.keys())}')
+		
+	
 if __name__ == '__main__':
-    main()
+	main()
