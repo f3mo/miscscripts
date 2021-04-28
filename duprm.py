@@ -1,5 +1,5 @@
 from hashlib import md5
-from os import path, listdir, remove
+from os import path, listdir, remove, walk
 from base64 import b64encode
 from sys import argv, exit
 
@@ -9,10 +9,12 @@ def get_file_list():
 		print('Choose a directory')
 		exit(5)	
 	else:
-		for file_ in listdir(argv[1]):
-			if path.isfile(path.join(argv[1], file_)) == True:	
-				file_list.append(path.join(argv[1], file_))
-		return file_list 
+		for root, dirs, files in walk(argv[1]):
+			for file_ in files:
+				if path.isfile(path.join(root, file_)):
+					file_list.append(path.join(root,file_))
+
+	return file_list
 
 
 def hash_file_list():
