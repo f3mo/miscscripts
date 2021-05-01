@@ -10,7 +10,7 @@ usage ``` duprm.py [directory] ```
 #### Todo:
 
 -  [x] Search files in subdirectories
--  [ ] Ask for user input before deleting files
+-  [x] Ask for user input before deleting files
 -  [ ] Handling of non-image files 
 
 
