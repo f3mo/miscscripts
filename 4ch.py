@@ -48,8 +48,7 @@ def check_files():
 	file_data = parse_json()
 	for files_ in os.listdir(argv[2]):
 		if files_ in file_data.keys():
-			file_data.pop(files_)
-	
+			file_data.pop(files_)	
 	return file_data
 	
 def main():
