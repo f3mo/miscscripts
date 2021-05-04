@@ -28,33 +28,43 @@ def hash_file_list():
       file_hash = b64encode(file_hash).decode()
       file_hash_map[file_] = file_hash
   return file_hash_map
+def sort_files():
+  file_dict = hash_file_list()
+  dup_files = {}
+  dup = {}
+  og_file = {}
+  og_file_list = []
+  for key, value in file_dict.items():
+    if key not in dup_files and value not in dup_files.values():
+      dup_files[key] = value 
+    if key not in dup_files:
+      dup[key] = value
+    if key not in dup.keys():
+      og_file[key] = value
+  for key, value in og_file.items():
+      if value in dup.values():
+          og_file_list.append(key)
+  #print(og_file_list)
+  return dup , og_file_list
+
 
 def main():
-  file_hash_map = hash_file_list()
-  sorted_files = {}
-  duplicates = []
+  dup_files,  og_files = sort_files()
   user = getpass.getuser()
   linux_trash = f'/home/{user}/.local/share/Trash/files/'
-  for key, value  in zip(file_hash_map, file_hash_map.values()):
-    if key not in sorted_files and value not in sorted_files.values():
-      sorted_files[key] = value
-    if key not in sorted_files:
-      duplicates.append(key)
-  print(f"Total of {len(duplicates)}")
-  for files in duplicates:
-    print(files)
-  user_input = input('\n Do you want to continue? [y/n]: \n')
-
-
-  if user_input == 'n':
-    exit(3)
-  elif user_input == 'y':
-    for key in file_hash_map: 
-      if key not in  sorted_files:
-        if platform.startswith('linux'):
-          replace(key,linux_trash+key.split('/')[-1] )
-        elif platform.startswith('windows'):
-          remove(key)
+  dup_files , og_files = sort_files()
+  print(f' {len(og_files)} was found\n')
+  for dup_f, og_f in zip(dup_files, og_files):
+    print(f' Duplicate:  {dup_f}\n '
+            f'original:  {og_f}\n')
+  user_input = input(' Do you want to continue? [y/n]: ')
+  if user_input == 'y':
+    for key in dup_files.keys(): 
+      if platform.startswith('linux'):
+        replace(key,linux_trash+key.split('/')[-1] )
+        print(f' \n File {key.split("/")[-1]} was deleted')
+      elif platform.startswith('windows'):
+        remove(key)
         print(f' File {key.split("/")[-1]} was deleted')
   else:
     exit(5)
