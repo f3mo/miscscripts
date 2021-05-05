@@ -18,7 +18,7 @@ def main():
               print(o)
     else:
       with open(txt_file, 'wt')as f:
-        for root , dirs, file_ in os.walk('/home/user/'):
+        for root , dirs, file_ in os.walk('/'):
           for files_ in file_:
              f.writelines(f'{root}+{files_}\n')
              files.append(root+files_)
