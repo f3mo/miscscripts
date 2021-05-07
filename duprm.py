@@ -1,9 +1,10 @@
 from hashlib import md5
-from os import path, listdir, replace, walk, remove
+from os import path, listdir, replace, walk, remove, stat
 from base64 import b64encode
 from sys import argv, exit, platform
 import getpass
-
+import time 
+start_time = time.time()
 def get_file_list():
   file_list = []
   if len(argv) < 2 or path.isdir(argv[1]) != True:
@@ -54,9 +55,14 @@ def main():
   linux_trash = f'/home/{user}/.local/share/Trash/files/'
   dup_files , og_files = sort_files()
   print(f' {len(og_files)} was found\n')
+  if len(og_files) == 0:
+      print(' No Duplicates found\n')
+      exit(3)
   for dup_f, og_f in zip(dup_files, og_files):
-    print(f' Duplicate:  {dup_f}\n '
-            f'original:  {og_f}\n')
+    file_size = float(stat(dup_f).st_size / 1000)
+    file_size2 = float(stat(og_f).st_size / 1000)
+    print(f' Duplicate:  {dup_f} - {file_size} kb \n '
+            f'original:  {og_f} - {file_size2} kb\n')
   user_input = input(' Do you want to continue? [y/n]: ')
   if user_input == 'y':
     for key in dup_files.keys(): 
