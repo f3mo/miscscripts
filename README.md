@@ -21,3 +21,9 @@ usage  ``` 4ch.py [thread url] [directory]  ```
 
 #### find.py:   a simple search engine that locates files and folders by filename instantly
 usage ```find.py [keyword] ```
+
+
+
+
+#### bulk rename.py: pretty self-explanatory
+usage ```bulkrename.py [dir] [name] ```
