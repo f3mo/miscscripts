@@ -4,7 +4,13 @@ from base64 import b64encode
 from sys import argv, exit, platform
 import getpass
 import time 
+import imghdr
 start_time = time.time()
+
+def check_if_img(img):
+    if type(imghdr.what(img)) == str:
+        return True
+    return False
 def get_file_list():
   file_list = []
   if len(argv) < 2 or path.isdir(argv[1]) != True:
@@ -13,7 +19,7 @@ def get_file_list():
   else:
     for root, dirs, files in walk(argv[1]):
       for file_ in files:
-        if path.isfile(path.join(root, file_)):
+        if path.isfile(path.join(root, file_)) and check_if_img(path.join(root, file_)):
           file_list.append(path.join(root,file_))
 
   return file_list
@@ -54,9 +60,8 @@ def main():
   user = getpass.getuser()
   linux_trash = f'/home/{user}/.local/share/Trash/files/'
   dup_files , og_files = sort_files()
-  print(f' {len(og_files)} was found\n')
+  print(f' {len(og_files)} duplicates found\n')
   if len(og_files) == 0:
-      print(' No Duplicates found\n')
       exit(3)
   for dup_f, og_f in zip(dup_files, og_files):
     file_size = float(stat(dup_f).st_size / 1000)
