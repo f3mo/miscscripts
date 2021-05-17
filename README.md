@@ -1,13 +1,13 @@
 # random-scripts
 
-#### duprm.py:  deletes duplicate files
+#### duprm.py:  finds deletes duplicate images
 usage ``` duprm.py [directory] ```
 
 #### Todo:
 
 -  [x] Search files in subdirectories
 -  [x] Ask for user input before deleting files
--  [ ] Handling of non-image files 
+-  [x] Handling of non-image files 
 
 
 
