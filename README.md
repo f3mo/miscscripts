@@ -1,4 +1,4 @@
-# random-scripts
+# miscscripts
 
 #### duprm.py:  finds deletes duplicate images
 usage ``` duprm.py [directory] ```
