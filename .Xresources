@@ -1,0 +1,24 @@
+#include "/home/user/.config/themes/Ubuntu"
+
+URxvt*termName: rxvt-unicode
+URxvt*scrollBar: false
+urxvt.font: xft:Consolas:pixelsize=22
+URxvt.tintColor: #ffffff
+urxvt.boldFont: xft:Consolas:pixelsize=20:weight=bold
+urxvt.letterSpace: -1
+urxvt.saveLines: 1000000
+URxvt.shadding: 50
+urxvt.perl-ext-common: default,matcher,font-size
+urxvt.urlLauncher: /usr/bin/firefox
+urxvt.matcher.button: C1
+URxvt.keysym.Control-0x2b: perl:font-size:increase
+URxvt.keysym.Control-0x2d: perl:font-size:decrease
+
+urxvt.keysym.Home:          \033[1~
+urxvt.keysym.End:           \033[4~
+urxvt.keysym.Control-Up:    \033[1;5A
+urxvt.keysym.Control-Down:  \033[1;5B
+urxvt.keysym.Control-Left:  \033[1;5D
+urxvt.keysym.Control-Right: \033[1;5C
+
+
